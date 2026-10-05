@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Caja de Eduardo</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="favicon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Caja Eduardo">
+<meta name="theme-color" content="#171310">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+<style>
+  :root{
+    --bg:#171310; --surface:#221D18; --surface-2:#2A241D; --border:#3A322A;
+    --text:#F1E9DA; --text-dim:#B8AB98; --accent:#C9A227; --accent-2:#E8C468;
+    --danger:#A8574A; --good:#7FA06B; --radius:10px;
+    padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+    box-sizing:border-box;
+  }
+  html{scroll-padding-top:env(safe-area-inset-top,0px);}
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:520px; margin:0 auto; padding:20px 16px 90px;}
+  header.top{display:flex; align-items:baseline; gap:10px; margin-bottom:2px;}
+  header.top h1{font-family:'Fraunces',serif; font-weight:600; font-size:1.5rem; margin:0; letter-spacing:.2px;}
+  .pole{font-size:1.3rem;}
+  .date-today{color:var(--text-dim); font-size:.85rem; margin:0 0 18px;}
+
+  .hero{background:linear-gradient(155deg,var(--surface) 0%,var(--surface-2) 100%);
+    border:1px solid var(--border); border-radius:calc(var(--radius) + 4px);
+    padding:20px 20px 16px; margin-bottom:16px;}
+  .hero-num{font-family:'Fraunces',serif; font-size:2.6rem; font-weight:600; color:var(--accent-2); display:block; line-height:1;}
+  .hero-label{color:var(--text-dim); font-size:.85rem;}
+  .hero-sub{display:flex; flex-wrap:wrap; gap:8px 16px; margin-top:12px; font-size:.85rem; color:var(--text-dim); border-top:1px solid var(--border); padding-top:10px;}
+  .hero-sub b{color:var(--text); font-weight:600;}
+
+  .card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:16px; margin-bottom:14px;}
+  .card h2{font-size:.95rem; font-weight:600; margin:0 0 12px; color:var(--text);}
+
+  form label{display:block; font-size:.8rem; color:var(--text-dim); margin-bottom:12px;}
+  form input, form select{
+    width:100%; margin-top:5px; padding:11px 12px; background:var(--surface-2);
+    border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:1rem;
+    font-family:inherit; appearance:none;
+  }
+  form select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%23B8AB98' stroke-width='1.6' fill='none'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 12px center;}
+  form input:focus, form select:focus{outline:2px solid var(--accent); outline-offset:1px;}
+  button{
+    font-family:inherit; font-weight:600; font-size:.95rem; border:none; border-radius:8px;
+    padding:12px 16px; cursor:pointer;
+  }
+  button.primary{width:100%; background:var(--accent); color:#221A0C; margin-top:2px;}
+  button.primary:active{background:var(--accent-2);}
+  button.ghost{background:transparent; color:var(--text-dim); border:1px solid var(--border);}
+
+  details.card summary{cursor:pointer; font-size:.9rem; color:var(--text-dim); list-style:none;}
+  details.card summary::-webkit-details-marker{display:none;}
+  details.card summary b{color:var(--accent-2);}
+  details.card[open] summary{margin-bottom:12px;}
+  .pct-row{display:flex; gap:8px; align-items:flex-end;}
+  .pct-row label{flex:1;}
+
+  .totals-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .t-cell{background:var(--surface-2); border-radius:8px; padding:10px 12px;}
+  .t-num{display:block; font-size:1.15rem; font-weight:700;}
+  .t-label{font-size:.75rem; color:var(--text-dim);}
+
+  .cliente-row, .tx-row{
+    display:flex; justify-content:space-between; align-items:center; gap:10px;
+    padding:10px 0; border-bottom:1px solid var(--border);
+  }
+  .cliente-row:last-child, .tx-row:last-child{border-bottom:none;}
+  .cliente-row{cursor:pointer; background:none; border:none; border-bottom:1px solid var(--border); width:100%; text-align:left; font:inherit; color:inherit;}
+  .cliente-row:active{background:var(--surface-2);}
+  .cliente-name{font-weight:600; font-size:.92rem;}
+  .cliente-meta{font-size:.78rem; color:var(--text-dim);}
+  .cliente-right{text-align:right; font-size:.85rem; display:flex; align-items:center; gap:8px;}
+  .cliente-right b{display:block;}
+  .chevron{color:var(--text-dim); font-size:1.1rem;}
+
+  .clientes-toggle{
+    width:100%; background:none; border:none; color:inherit; font:inherit;
+    display:flex; justify-content:space-between; align-items:center; padding:0;
+  }
+  .clientes-toggle h2{margin:0;}
+  .clientes-toggle-right{display:flex; align-items:center; gap:6px; color:var(--text-dim); font-size:.85rem;}
+  .clientes-list{margin-top:10px;}
+
+  .tabbar{
+    position:fixed; left:0; right:0; bottom:0; z-index:15; max-width:520px; margin:0 auto;
+    display:flex; background:var(--surface); border-top:1px solid var(--border);
+    padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));
+  }
+  .tab-btn{
+    flex:1; background:none; border:none; color:var(--text-dim); font:inherit;
+    display:flex; flex-direction:column; align-items:center; gap:3px; padding:6px 0; font-size:.72rem;
+  }
+  .tab-btn .tab-icon{font-size:1.25rem;}
+  .tab-btn.active{color:var(--accent-2);}
+  .week-summary{font-size:.78rem; color:var(--text-dim); margin:-6px 0 12px;}
+
+  .modal-backdrop{
+    position:fixed; inset:0; background:rgba(10,8,6,.6); z-index:20;
+    display:flex; align-items:flex-end; justify-content:center;
+  }
+  .modal{
+    background:var(--surface); width:100%; max-width:520px; max-height:82vh; overflow-y:auto;
+    border-radius:16px 16px 0 0; padding:18px 16px calc(20px + env(safe-area-inset-bottom,0px));
+    border:1px solid var(--border); border-bottom:none;
+  }
+  .modal-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;}
+  .modal-head h3{font-family:'Fraunces',serif; font-weight:600; font-size:1.2rem; margin:0;}
+  .modal-close{background:var(--surface-2); border:none; color:var(--text-dim); width:30px; height:30px; border-radius:50%; font-size:1.1rem; line-height:1;}
+  .modal-stats{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:16px;}
+  .modal-stats .t-cell{padding:8px 6px; text-align:center;}
+  .modal-stats .t-num{font-size:.95rem;}
+  .modal-meta p{font-size:.85rem; color:var(--text-dim); margin:0 0 6px;}
+  .modal-meta b{color:var(--text); font-weight:600;}
+  .modal h4{font-size:.85rem; color:var(--text-dim); margin:16px 0 4px; font-weight:600;}
+  .wa-btn{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    background:#25D366; color:#0b2013; font-weight:700; text-decoration:none;
+    padding:11px 14px; border-radius:8px; margin-bottom:10px; font-size:.9rem;
+  }
+  .phone-edit{display:flex; gap:8px; margin-bottom:6px;}
+  .phone-edit input{flex:1; width:auto; margin-top:0; padding:10px 12px; background:var(--surface-2);
+    border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:.9rem; font-family:inherit;}
+  .phone-edit button{flex-shrink:0;}
+
+  .tx-info{font-size:.88rem;}
+  .tx-info .tx-cliente{font-weight:600;}
+  .tx-info .tx-meta{font-size:.76rem; color:var(--text-dim); margin-top:2px;}
+  .tx-right{display:flex; align-items:center; gap:10px;}
+  .tx-amount{font-weight:700; font-size:.92rem;}
+  .del-btn{background:none; border:none; color:var(--danger); font-size:1.1rem; padding:4px 6px; line-height:1;}
+
+  .empty{color:var(--text-dim); font-size:.88rem; padding:8px 0;}
+  .toast{
+    position:fixed; left:50%; bottom:calc(20px + env(safe-area-inset-bottom,0px));
+    transform:translateX(-50%); background:var(--danger); color:#fff; padding:10px 16px;
+    border-radius:8px; font-size:.85rem; opacity:0; pointer-events:none; transition:opacity .2s;
+  }
+  .toast.show{opacity:1;}
+</style>
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<div class="toast" id="toast"></div>
+
+<script id="state-data" type="application/json">{"comisionPct":50,"transacciones":[{"id":"mukf0w29bp137","fecha":"2026-09-27T22:53:59.505Z","cliente":"Gerardo","servicio":"Barba","metodo":"Efectivo","monto":10},{"id":"mukf1ynee59mf","fecha":"2026-09-27T22:54:49.514Z","cliente":"Oswaldo","servicio":"Combo (Corte+Barba)","metodo":"Transferencia","monto":30},{"id":"mulcmdnntw7tm","fecha":"2026-09-28T14:34:29.411Z","cliente":"Jonny","servicio":"Corte","metodo":"Transferencia","monto":15},{"id":"mulcmzmosynes","fecha":"2026-09-28T14:34:57.889Z","cliente":"Ulises","servicio":"Corte","metodo":"Transferencia","monto":15},{"id":"mulcppnuxsu7g","fecha":"2026-09-28T14:37:04.938Z","cliente":"Angel","servicio":"Corte","metodo":"Transferencia","monto":15},{"id":"mulnar1xjjbrn","fecha":"2026-09-28T19:33:22.677Z","cliente":"Manuel","servicio":"Corte","metodo":"Efectivo","monto":15},{"id":"mulugtvbq1krz","fecha":"2026-09-28T22:54:03.575Z","cliente":"Maikol","servicio":"Corte","metodo":"Efectivo","monto":15},{"id":"mun0eij9l2guq","fecha":"2026-09-29T18:27:59.445Z","cliente":"Alex","servicio":"Combo (Corte+Barba)","metodo":"Divisa (USD)","monto":20},{"id":"mun40j2h639dt","fecha":"2026-09-29T20:09:05.417Z","cliente":"Cliente nuevo","servicio":"Corte","metodo":"Divisa (USD)","monto":15,"propina":0},{"id":"mupoaf5icx9h9","fecha":"2026-10-01T15:12:11.574Z","cliente":"Ricardo","servicio":"Barba","metodo":"Transferencia","monto":10,"propina":0},{"id":"mupqkm4dge13t","fecha":"2026-10-01T16:16:06.397Z","cliente":"Cliente nuevo","servicio":"Barba","metodo":"Transferencia","monto":10,"propina":0},{"id":"muq7gpil3yh0x","fecha":"2026-10-02T00:08:57.645Z","cliente":"Nuevo","servicio":"Barba","metodo":"Divisa (USD)","monto":15,"propina":0},{"id":"muq7h2nddctcr","fecha":"2026-10-02T00:09:14.665Z","cliente":"Nuevo","servicio":"Corte","metodo":"Transferencia","monto":10,"propina":0},{"id":"murfxc2wo0a00","fecha":"2026-10-02T20:53:36.488Z","cliente":"Cesar","servicio":"Corte","metodo":"Divisa (USD)","monto":15,"propina":0},{"id":"murfycb004vji","fecha":"2026-10-02T20:54:23.436Z","cliente":"Andrés Guevara","servicio":"Corte","metodo":"Divisa (USD)","monto":15,"propina":0},{"id":"murobn8nolpfe","fecha":"2026-10-03T00:48:41.063Z","cliente":"Cliente nuevo","servicio":"Corte","metodo":"Transferencia","monto":15,"propina":0},{"id":"musl62qra9pjj","fecha":"2026-10-03T16:08:08.547Z","cliente":"Anibal","servicio":"Corte","metodo":"Transferencia","monto":15,"propina":0},{"id":"musouspyoymk2","fecha":"2026-10-03T17:51:20.806Z","cliente":"Jesus","servicio":"Corte","metodo":"Transferencia","monto":15,"propina":0},{"id":"mut0oa33ujqt9","fecha":"2026-10-03T23:22:12.111Z","cliente":"Carmen","servicio":"Corte","metodo":"Transferencia","monto":15,"propina":0},{"id":"mut0om01wfr7z","fecha":"2026-10-03T23:22:27.553Z","cliente":"Carlos","servicio":"Corte","metodo":"Transferencia","monto":15,"propina":0},{"id":"muu3goqd1gxoy","fecha":"2026-10-04T17:28:02.869Z","cliente":"Carlos","servicio":"Corte","metodo":"Transferencia","monto":15,"propina":0},{"id":"muu6i491rjylj","fecha":"2026-10-04T18:53:08.485Z","cliente":"Ulises","servicio":"Corte","metodo":"Divisa (USD)","monto":15,"propina":0},{"id":"muu6iovxrjo0q","fecha":"2026-10-04T18:53:35.229Z","cliente":"Gerardo","servicio":"Barba","metodo":"Divisa (USD)","monto":10,"propina":0}],"contactos":{"carlos":"584144342851","ulises":"584124866862"}}</script>
+<script>
+(function(){
+  "use strict";
+  const SERVICIOS = ['Corte','Barba','Combo (Corte+Barba)','Otro'];
+  const METODOS = ['Efectivo','Transferencia','Tarjeta','Divisa (USD)'];
+  const DIAS = ['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado'];
+
+  const STORAGE_KEY = 'caja-eduardo-datos';
+  let state;
+  try{
+    const saved = localStorage.getItem(STORAGE_KEY);
+    state = saved ? JSON.parse(saved) : JSON.parse(document.getElementById('state-data').textContent);
+  }catch(e){
+    state = JSON.parse(document.getElementById('state-data').textContent);
+  }
+  if (!state.contactos) state.contactos = {}; // telefono por cliente (clave: nombre en minuscula)
+
+  function esc(s){
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  function money(n){ return '$' + (Math.round(n*100)/100).toFixed(2); }
+
+  function enrich(t){
+    const d = new Date(t.fecha);
+    const propina = t.propina || 0;
+    const comision = t.monto * state.comisionPct / 100; // la comision nunca toca la propina
+    return Object.assign({}, t, {
+      dia: DIAS[d.getDay()],
+      hora: d.getHours(),
+      propina: propina,
+      comision: comision,
+      neto: t.monto - comision + propina, // la propina se suma 100% al neto
+      fechaLegible: d.toLocaleDateString('es',{day:'2-digit',month:'short'}) + ' ' + d.toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'})
+    });
+  }
+
+  let openClientKey = null; // estado local de la pantalla, no se guarda
+  let openDiaKey = null; // estado local de la pantalla, no se guarda
+  let activeTab = 'hoy'; // estado local de la pantalla, no se guarda
+
+  function diaKeyOf(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+
+  function resumenDias(){
+    const map = {};
+    state.transacciones.forEach(t => {
+      const d = new Date(t.fecha);
+      const key = diaKeyOf(d);
+      if (!map[key]) map[key] = {key:key, fecha:d, count:0, total:0, comision:0, propina:0, txs:[]};
+      const e = enrich(t);
+      map[key].count++;
+      map[key].total += t.monto + e.propina;
+      map[key].comision += e.comision;
+      map[key].propina += e.propina;
+      map[key].txs.push(e);
+    });
+    return Object.values(map).sort((a,b) => b.fecha - a.fecha);
+  }
+
+  function agruparPorSemana(dias){
+    const weeks = {};
+    dias.forEach(d => {
+      const wd = new Date(d.fecha);
+      const offset = wd.getDay(); // semana inicia domingo
+      wd.setDate(wd.getDate() - offset); wd.setHours(0,0,0,0);
+      const wk = diaKeyOf(wd);
+      if (!weeks[wk]) weeks[wk] = {inicio:wd, dias:[]};
+      weeks[wk].dias.push(d);
+    });
+    return Object.values(weeks).sort((a,b) => b.inicio - a.inicio);
+  }
+
+  function modalDia(d){
+    return `
+      <div class="modal-backdrop" id="modal-backdrop">
+        <div class="modal">
+          <div class="modal-head">
+            <h3>${DIAS[d.fecha.getDay()]} ${d.fecha.toLocaleDateString('es',{day:'2-digit',month:'short'})}</h3>
+            <button class="modal-close" id="modal-close" aria-label="Cerrar">&times;</button>
+          </div>
+          <div class="modal-stats">
+            <div class="t-cell"><span class="t-num">${d.count}</span><span class="t-label">cortes</span></div>
+            <div class="t-cell"><span class="t-num">${money(d.total)}</span><span class="t-label">facturado</span></div>
+            <div class="t-cell"><span class="t-num">${money(d.comision)}</span><span class="t-label">comision</span></div>
+            <div class="t-cell"><span class="t-num">${money(d.total - d.comision)}</span><span class="t-label">neto</span></div>
+          </div>
+          <h4>Quien vino</h4>
+          ${d.txs.map(t => `
+            <div class="tx-row">
+              <div class="tx-info">
+                <div class="tx-cliente">${esc(t.cliente)}</div>
+                <div class="tx-meta">${esc(t.servicio)} &middot; ${esc(t.metodo)} &middot; ${String(t.hora).padStart(2,'0')}:00${t.propina>0?' &middot; +'+money(t.propina)+' propina':''}</div>
+              </div>
+              <div class="tx-right">
+                <span class="tx-amount">${money(t.monto)}</span>
+                <button class="del-btn" data-id="${t.id}" aria-label="Eliminar">&times;</button>
+              </div>
+            </div>`).join('')}
+        </div>
+      </div>`;
+  }
+
+  function renderDias(dias){
+    if (dias.length === 0) return '<section class="card"><p class="empty">Aun no hay movimientos registrados.</p></section>';
+    const semanas = agruparPorSemana(dias);
+    const cards = semanas.map(w => {
+      const fin = new Date(w.inicio); fin.setDate(fin.getDate() + 5);
+      const label = 'Semana del ' + w.inicio.toLocaleDateString('es',{day:'2-digit',month:'short'}) + ' al ' + fin.toLocaleDateString('es',{day:'2-digit',month:'short'});
+      let wCount = 0, wTotal = 0, wComision = 0;
+      w.dias.forEach(d => { wCount += d.count; wTotal += d.total; wComision += d.comision; });
+      return `<section class="card">
+        <h2>${label}</h2>
+        <p class="week-summary">${wCount} corte${wCount===1?'':'s'} &middot; ${money(wTotal)} facturado &middot; ${money(wTotal - wComision)} neto</p>
+        ${w.dias.map(d => `
+          <button type="button" class="cliente-row" data-dia="${d.key}">
+            <div>
+              <div class="cliente-name">${DIAS[d.fecha.getDay()]} ${d.fecha.toLocaleDateString('es',{day:'2-digit',month:'short'})}</div>
+              <div class="cliente-meta">${d.count} corte${d.count===1?'':'s'}</div>
+            </div>
+            <div class="cliente-right">
+              <div><b>${money(d.total)}</b></div>
+              <span class="chevron">&rsaquo;</span>
+            </div>
+          </button>`).join('')}
+      </section>`;
+    }).join('');
+    const h = totales();
+    const historico = `<section class="card">
+      <h2>Total historico</h2>
+      <p class="week-summary">Desde que empezaste a usar la caja, sin reiniciarse nunca</p>
+      <div class="totals-grid">
+        <div class="t-cell"><span class="t-num">${h.count}</span><span class="t-label">cortes</span></div>
+        <div class="t-cell"><span class="t-num">${money(h.facturado)}</span><span class="t-label">facturado</span></div>
+        <div class="t-cell"><span class="t-num">${money(h.comision)}</span><span class="t-label">comision</span></div>
+        <div class="t-cell"><span class="t-num">${money(h.neto)}</span><span class="t-label">neto</span></div>
+      </div>
+    </section>`;
+    return cards + historico;
+  }
+
+  function renderClientesTab(clientes){
+    return `<section class="card">
+      <h2>Clientes</h2>
+      ${clientes.length === 0 ? '<p class="empty">Aun no hay clientes. Registra el primer corte en Hoy.</p>' :
+        clientes.map(c => `
+          <button type="button" class="cliente-row" data-key="${esc(c.key)}">
+            <div>
+              <div class="cliente-name">${esc(c.nombre)}</div>
+              <div class="cliente-meta">${c.visitas} visita${c.visitas===1?'':'s'} &middot; hace ${c.diasDesdeUltima} dia${c.diasDesdeUltima===1?'':'s'}</div>
+            </div>
+            <div class="cliente-right">
+              <div>
+                <b>${money(c.total)}</b>
+                <span class="cliente-meta">com. ${money(c.comision)}</span>
+              </div>
+              <span class="chevron">&rsaquo;</span>
+            </div>
+          </button>`).join('')}
+    </section>`;
+  }
+
+  function resumenClientes(){
+    const map = {};
+    state.transacciones.forEach(t => {
+      const key = t.cliente.trim().toLowerCase();
+      if (!map[key]) map[key] = {key:key, nombre:t.cliente.trim(), visitas:0, total:0, comision:0, propina:0, fechas:[], txs:[]};
+      const e = enrich(t);
+      map[key].visitas++;
+      map[key].total += t.monto + e.propina;
+      map[key].comision += e.comision;
+      map[key].propina += e.propina;
+      map[key].fechas.push(new Date(t.fecha).getTime());
+      map[key].txs.push(e);
+    });
+    return Object.values(map).map(c => {
+      c.fechas.sort((a,b) => a - b);
+      c.primera = c.fechas[0];
+      c.ultima = c.fechas[c.fechas.length - 1];
+      c.diasDesdeUltima = Math.floor((Date.now() - c.ultima) / 86400000);
+      c.frecuenciaProm = c.visitas > 1 ? (c.ultima - c.primera) / (c.visitas - 1) / 86400000 : null;
+      c.txs.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
+      c.telefono = state.contactos[c.key] || '';
+      return c;
+    }).sort((a,b) => b.ultima - a.ultima);
+  }
+
+  function modalCliente(c){
+    const fmt = ms => new Date(ms).toLocaleDateString('es',{day:'2-digit',month:'short',year:'numeric'});
+    return `
+      <div class="modal-backdrop" id="modal-backdrop">
+        <div class="modal">
+          <div class="modal-head">
+            <h3>${esc(c.nombre)}</h3>
+            <button class="modal-close" id="modal-close" aria-label="Cerrar">&times;</button>
+          </div>
+          <div class="modal-stats">
+            <div class="t-cell"><span class="t-num">${c.visitas}</span><span class="t-label">visitas</span></div>
+            <div class="t-cell"><span class="t-num">${money(c.total)}</span><span class="t-label">facturado</span></div>
+            <div class="t-cell"><span class="t-num">${money(c.comision)}</span><span class="t-label">comision</span></div>
+            <div class="t-cell"><span class="t-num">${money(c.total - c.comision)}</span><span class="t-label">neto</span></div>
+          </div>
+          <div class="modal-meta">
+            <p>Primera visita: <b>${fmt(c.primera)}</b></p>
+            <p>Ultima visita: <b>${fmt(c.ultima)}</b> (hace ${c.diasDesdeUltima} dia${c.diasDesdeUltima===1?'':'s'})</p>
+            <p>Frecuencia: <b>${c.frecuenciaProm === null ? 'aun con una sola visita' : 'cada ' + Math.max(1, Math.round(c.frecuenciaProm)) + ' dias en promedio'}</b></p>
+            ${c.propina > 0 ? `<p>Propinas dejadas: <b>${money(c.propina)}</b></p>` : ''}
+          </div>
+
+          ${c.telefono ? `<a class="wa-btn" href="https://wa.me/${c.telefono.replace(/\D/g,'')}" target="_blank" rel="noopener">&#x1F4AC; Escribir por WhatsApp</a>` : ''}
+          <form class="phone-edit" id="phone-form" data-key="${esc(c.key)}">
+            <input type="tel" id="phone-input" placeholder="Con codigo de pais, ej 584121234567" value="${esc(c.telefono)}">
+            <button type="submit" class="ghost">${c.telefono ? 'Actualizar' : 'Guardar'}</button>
+          </form>
+
+          <h4>Visitas</h4>
+          ${c.txs.map(t => `
+            <div class="tx-row">
+              <div class="tx-info">
+                <div class="tx-cliente">${esc(t.servicio)}</div>
+                <div class="tx-meta">${esc(t.metodo)} &middot; ${t.dia} ${t.fechaLegible}${t.propina > 0 ? ' &middot; +' + money(t.propina) + ' propina' : ''}</div>
+              </div>
+              <span class="tx-amount">${money(t.monto)}</span>
+            </div>`).join('')}
+        </div>
+      </div>`;
+  }
+
+  function totales(){
+    let facturado = 0, comision = 0, propina = 0;
+    state.transacciones.forEach(t => {
+      const p = t.propina || 0;
+      facturado += t.monto + p; comision += t.monto * state.comisionPct / 100; propina += p;
+    });
+    return {facturado, comision, propina, neto: facturado - comision, count: state.transacciones.length};
+  }
+
+  function totalesSemana(){
+    const hoy = new Date();
+    const inicio = new Date(hoy); inicio.setDate(inicio.getDate() - hoy.getDay()); inicio.setHours(0,0,0,0);
+    let facturado = 0, comision = 0, propina = 0, count = 0;
+    state.transacciones.forEach(t => {
+      const f = new Date(t.fecha);
+      if (f >= inicio){
+        const p = t.propina || 0;
+        facturado += t.monto + p; comision += t.monto * state.comisionPct / 100; propina += p; count++;
+      }
+    });
+    return {facturado, comision, propina, neto: facturado - comision, count, inicio};
+  }
+
+  function totalesHoy(){
+    const hoy = new Date(); hoy.setHours(0,0,0,0);
+    let facturado = 0, comision = 0, propina = 0;
+    state.transacciones.forEach(t => {
+      if (new Date(t.fecha) >= hoy){
+        const p = t.propina || 0;
+        facturado += t.monto + p; comision += t.monto * state.comisionPct / 100; propina += p;
+      }
+    });
+    return {facturado, comision, propina, neto: facturado - comision};
+  }
+
+  function render(){
+    const semana = totalesSemana();
+    const hoy = totalesHoy();
+    const clientes = resumenClientes();
+    const dias = resumenDias();
+
+    document.getElementById('app').innerHTML = `
+      <header class="top">
+        <span class="pole">&#x1F488;</span><h1>Caja de Eduardo</h1>
+      </header>
+      <p class="date-today">${new Date().toLocaleDateString('es',{weekday:'long', day:'numeric', month:'long'})}</p>
+
+      ${activeTab !== 'hoy' ? '' : `
+      <section class="hero">
+        <span class="hero-num">${money(hoy.facturado)}</span>
+        <span class="hero-label">cobrado hoy</span>
+        <div class="hero-sub">
+          <span>Comision: <b>${money(hoy.comision)}</b></span>
+          <span>Propina: <b>${money(hoy.propina)}</b></span>
+          <span>Neto: <b>${money(hoy.neto)}</b></span>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Registrar corte</h2>
+        <form id="tx-form">
+          <label>Cliente
+            <input required id="f-cliente" placeholder="Nombre del cliente" autocomplete="off">
+          </label>
+          <label>Telefono &mdash; opcional, solo la primera vez
+            <input type="tel" id="f-telefono" placeholder="Con codigo de pais, ej 584121234567" autocomplete="off">
+          </label>
+          <label>Servicio
+            <select id="f-servicio">${SERVICIOS.map(s => `<option>${esc(s)}</option>`).join('')}</select>
+          </label>
+          <label>Metodo de pago
+            <select id="f-metodo">${METODOS.map(m => `<option>${esc(m)}</option>`).join('')}</select>
+          </label>
+          <label>Monto ($)
+            <input required type="number" inputmode="decimal" step="0.01" min="0.01" id="f-monto" placeholder="0.00">
+          </label>
+          <label>Propina ($) &mdash; opcional, se suma completa
+            <input type="number" inputmode="decimal" step="0.01" min="0" id="f-propina" placeholder="0.00">
+          </label>
+          <button type="submit" class="primary">Registrar</button>
+        </form>
+      </section>
+
+      <details class="card">
+        <summary>Comision actual: <b>${state.comisionPct}%</b> &middot; toca para editar</summary>
+        <div class="pct-row">
+          <label>% de comision<input type="number" id="f-pct" min="0" max="100" step="1" value="${state.comisionPct}"></label>
+          <button id="save-pct" class="ghost">Guardar</button>
+        </div>
+      </details>
+
+      <section class="card">
+        <h2>Totales de la semana</h2>
+        <p class="week-summary">Desde el domingo ${semana.inicio.toLocaleDateString('es',{day:'2-digit',month:'short'})} &middot; se reinicia solo cada domingo</p>
+        <div class="totals-grid">
+          <div class="t-cell"><span class="t-num">${semana.count}</span><span class="t-label">cortes</span></div>
+          <div class="t-cell"><span class="t-num">${money(semana.facturado)}</span><span class="t-label">facturado</span></div>
+          <div class="t-cell"><span class="t-num">${money(semana.comision)}</span><span class="t-label">comision</span></div>
+          <div class="t-cell"><span class="t-num">${money(semana.propina)}</span><span class="t-label">propinas</span></div>
+          <div class="t-cell"><span class="t-num">${money(semana.neto)}</span><span class="t-label">neto</span></div>
+        </div>
+      </section>
+      `}
+
+      ${activeTab === 'dias' ? renderDias(dias) : ''}
+      ${activeTab === 'clientes' ? renderClientesTab(clientes) : ''}
+
+      ${openClientKey ? modalCliente(clientes.find(c => c.key === openClientKey)) :
+        openDiaKey ? modalDia(dias.find(d => d.key === openDiaKey)) : ''}
+
+      <nav class="tabbar">
+        <button type="button" class="tab-btn ${activeTab==='hoy'?'active':''}" data-tab="hoy"><span class="tab-icon">&#x1F3E0;</span>Hoy</button>
+        <button type="button" class="tab-btn ${activeTab==='dias'?'active':''}" data-tab="dias"><span class="tab-icon">&#x1F4C5;</span>Dias</button>
+        <button type="button" class="tab-btn ${activeTab==='clientes'?'active':''}" data-tab="clientes"><span class="tab-icon">&#x1F464;</span>Clientes</button>
+      </nav>
+    `;
+    attachHandlers();
+  }
+
+  function showToast(msg){
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 2600);
+  }
+
+  function persist(newState){
+    state = newState;
+    render();
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }catch(e){
+      showToast('No se pudo guardar en este telefono: ' + (e && e.message ? e.message : 'error'));
+    }
+  }
+
+  function attachHandlers(){
+    const txForm = document.getElementById('tx-form');
+    if (txForm){
+      txForm.addEventListener('submit', function(ev){
+        ev.preventDefault();
+        const cliente = document.getElementById('f-cliente').value.trim();
+        const servicio = document.getElementById('f-servicio').value;
+        const metodo = document.getElementById('f-metodo').value;
+        const monto = parseFloat(document.getElementById('f-monto').value);
+        const propina = parseFloat(document.getElementById('f-propina').value) || 0;
+        const telefono = document.getElementById('f-telefono').value.trim();
+        if (!cliente || !(monto > 0)) return;
+        const nuevo = {
+          id: Date.now().toString(36) + Math.random().toString(36).slice(2,7),
+          fecha: new Date().toISOString(),
+          cliente, servicio, metodo, monto, propina
+        };
+        const contactos = Object.assign({}, state.contactos);
+        if (telefono) contactos[cliente.trim().toLowerCase()] = telefono;
+        const next = Object.assign({}, state, {transacciones: state.transacciones.concat([nuevo]), contactos});
+        persist(next);
+      });
+    }
+
+    const savePct = document.getElementById('save-pct');
+    if (savePct){
+      savePct.addEventListener('click', function(){
+        const val = parseFloat(document.getElementById('f-pct').value);
+        if (isNaN(val) || val < 0 || val > 100) return;
+        const next = Object.assign({}, state, {comisionPct: val});
+        persist(next);
+      });
+    }
+
+    document.querySelectorAll('.del-btn').forEach(btn => {
+      btn.addEventListener('click', function(){
+        if (!confirm('¿Eliminar este registro?')) return;
+        const id = btn.getAttribute('data-id');
+        const next = Object.assign({}, state, {transacciones: state.transacciones.filter(t => t.id !== id)});
+        persist(next);
+      });
+    });
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', function(){
+        activeTab = btn.getAttribute('data-tab');
+        openClientKey = null;
+        openDiaKey = null;
+        render();
+      });
+    });
+
+    document.querySelectorAll('.cliente-row').forEach(row => {
+      row.addEventListener('click', function(){
+        if (row.hasAttribute('data-dia')){
+          openDiaKey = row.getAttribute('data-dia');
+          openClientKey = null;
+        } else {
+          openClientKey = row.getAttribute('data-key');
+          openDiaKey = null;
+        }
+        render();
+      });
+    });
+
+    const phoneForm = document.getElementById('phone-form');
+    if (phoneForm){
+      phoneForm.addEventListener('submit', function(ev){
+        ev.preventDefault();
+        const key = phoneForm.getAttribute('data-key');
+        const val = document.getElementById('phone-input').value.trim();
+        const contactos = Object.assign({}, state.contactos);
+        if (val) contactos[key] = val; else delete contactos[key];
+        const next = Object.assign({}, state, {contactos});
+        persist(next);
+      });
+    }
+
+    const closeBtn = document.getElementById('modal-close');
+    if (closeBtn){
+      closeBtn.addEventListener('click', function(){ openClientKey = null; openDiaKey = null; render(); });
+    }
+    const backdrop = document.getElementById('modal-backdrop');
+    if (backdrop){
+      backdrop.addEventListener('click', function(ev){
+        if (ev.target === backdrop){ openClientKey = null; openDiaKey = null; render(); }
+      });
+    }
+  }
+
+  render();
+})();
+</script></body></html></body>
+</html>
